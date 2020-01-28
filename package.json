@@ -1,9 +1,9 @@
 {
-  "name": "reactivefetch",
+  "name": "@emilion/reactive-fetch",
   "version": "0.1.0",
   "description": "RxJS fromFetch wrapper including request and response interceptors on global (all calls) and for every server call.",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "dependencies": {
     "rxjs": "^6.5.4"
   },
