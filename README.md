@@ -1,2 +1,2 @@
 # ReactiveFetch
-RxJS fromFetch wrapper with global, request and response interceptors. 
+RxJS fromFetch wrapper including request and response interceptors on global (all calls) and for every server call.

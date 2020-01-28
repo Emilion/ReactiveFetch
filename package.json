@@ -1,0 +1,37 @@
+{
+  "name": "reactivefetch",
+  "version": "0.1.0",
+  "description": "RxJS fromFetch wrapper including request and response interceptors on global (all calls) and for every server call.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "dependencies": {
+    "rxjs": "^6.5.4"
+  },
+  "devDependencies": {
+    "browserify": "latest",
+    "@types/browserify": "latest",
+    "typescript": "next"
+  },
+  "scripts": {
+    "test": "test",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emilion/ReactiveFetch.git"
+  },
+  "keywords": [
+    "ReactiveFetch",
+    "fetch",
+    "fromFetch",
+    "interceptors",
+    "interceptor",
+    "RxJS"
+  ],
+  "author": "Emil Kopev",
+  "license": "SCI",
+  "bugs": {
+    "url": "https://github.com/Emilion/ReactiveFetch/issues"
+  },
+  "homepage": "https://github.com/Emilion/ReactiveFetch#readme"
+}
