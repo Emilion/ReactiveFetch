@@ -1,11 +1,37 @@
-import {EMPTY, Observable, throwError} from "rxjs";
+import {Observable, of, throwError} from "rxjs";
 import {fromFetch} from 'rxjs/fetch';
 import {mergeMap} from "rxjs/operators";
-import {fromPromise} from "rxjs/internal-compatibility";
+import {fromPromise, isArray} from "rxjs/internal-compatibility";
 import {Interceptors, RequestInterceptor, ResponseInterceptor} from "./interceptors";
 
 const htmlRegex = /text\/html/;
 const jsonRegex = /application\/json/;
+
+/**
+ *
+ * @param response
+ * @returns {Observable<any>}
+ */
+const getResultObservable = (response: Response) => {
+    let contentType = response.headers.get('content-type');
+
+    let dataObservable;
+    if (jsonRegex.test(<string>contentType)) {
+        dataObservable = fromPromise(response.json());
+    }
+    if (htmlRegex.test(<string>contentType)) {
+        dataObservable = fromPromise(response.text());
+    }
+    /**
+     * add new content-type handler bellow
+     */
+
+    if (!dataObservable) {
+        dataObservable = of({});
+    }
+
+    return dataObservable;
+};
 export const fromFetchWIthInterceptors = <T>(request: Request, init: RequestInit, interceptors: Interceptors): Observable<Response> => {
 
     const {requestInterceptors, responseInterceptors} = interceptors;
@@ -48,32 +74,18 @@ export const fromFetchWIthInterceptors = <T>(request: Request, init: RequestInit
 
             let resultResponse = response.clone();
             // executing global and request specific req Interceptors
-            responseInterceptors.forEach(interceptor => {
-                    resultResponse = callRespInterceptor(interceptor, resultResponse);
-                }
-            );
+            if (isArray(responseInterceptors)) {
+                responseInterceptors.forEach(interceptor => {
+                      resultResponse = callRespInterceptor(interceptor, resultResponse);
+                  }
+                )
+            }
 
             if (response.ok) {
 
-                /*
-                 * Data subscription
-                 * */
-                let contentType = resultResponse.headers.get('content-type');
-
-                let dataObservable: Observable<T | any> = EMPTY;
-                /*
-                    Handling different response body types
-                 */
-                if (jsonRegex.test(<string>contentType)) {
-                    dataObservable = fromPromise(resultResponse.json());
-                }
-                if (htmlRegex.test(<string>contentType)) {
-                    dataObservable = fromPromise(resultResponse.text());
-                }
-                // TODO: handle formData
-                return dataObservable;
+                getResultObservable(response);
             }
-            return throwError(resultResponse);
+            return throwError(getResultObservable(response));
         })
     );
 };
